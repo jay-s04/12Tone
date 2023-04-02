@@ -132,7 +132,19 @@ def run():
     notes = spit_out_notes(new_series, note_dictionary)
     print(notes)
 
+    while(True):
+            user_input = input("Would you like to go again? Y/n: ")
+            if user_input.lower() not in 'yn': # Any answer other than yes or no
+                print('Invalid input. Try again')
+            elif user_input.lower() == 'n':
+                print('Exiting program...')
+                return None
+            elif user_input.lower() == 'y':
+                run()
+            else:
+                print('What') # This should technically be inaccessible, but just in case...
+                continue           
+
 run()
-# TODO: Add a while(True) to the run() function with a y/n break if the user
-# wants to run the program again. Also add a conditional for if they want
-# to use the same series they entered last time.
+# TODO: Add a conditional for if they want to use the same series they entered last time.
+# def run_again(prime_series): This would be called from the run function...
