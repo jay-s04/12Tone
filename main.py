@@ -4,12 +4,15 @@ import time
 def get_reference_pitch():
     while True:
         base_list = ['C', 'C#', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B']
+        enharmonics = {'Db': 'C#', 'D#': 'Eb', 'Gb': 'F#', 'G#': 'Ab', 'A#': 'Bb'}
 
         reference_pitch = input("Please enter your reference pitch: ")
 
         if reference_pitch in base_list:
             print(f"Your reference pitch is {reference_pitch}")
             return reference_pitch
+        elif reference_pitch in enharmonics:
+            print(f"Note unavailable. Did you mean [{enharmonics[reference_pitch]}]?")
         else:
             print("Invalid Reference Pitch. Available accidentals include: C#, Eb, F#, Ab, Bb\n")
         
@@ -36,10 +39,10 @@ def create_note_dictionary(reference_pitch: str):
 # Now to get the prime series from the user
 def get_prime_series():
     while True:
-        user_input = input("Please enter your 12tone series. Seperate the numbers with spaces: ")
+        user_input = input("Please enter your 12tone series. Separate the numbers with spaces: ")
         series = [i for i in list(user_input.split(' '))]
         # And now we check for errors.
-        # Our two main checks are whether each element of the list is a number and whether its less than 12
+        # Our two main checks are whether each element of the list is a number, and whether it's less than 12
         # This check also converts the list[str] to a list[int]
         for index, element in enumerate(series):
             if element.isdigit():
@@ -84,11 +87,13 @@ def transform(prime_series: list[int]):
         new_series = prime_series.copy()
         error = False
 
-        # Put something in here to deal with if they enter the number before
+        # I've put something in here to deal with if they enter the number before
         # the letter. Something like '4R' instead of 'R4'
         # This is because it refers back to the instantiated dictionary instead 
         # of creating a new one in this case.
-
+        if transformations[0].isdigit() and len(transformations) > 1:
+            print("If applying more than 1 transformation, put the number after.")
+            continue
         # Now to check and apply the transformations.
         for i in transformations:
             if i.isdigit():
