@@ -98,7 +98,6 @@ def transform(prime_series: list[int]):
         for i in transformations:
             if i.isdigit():
                 new_series = transpose(new_series, int(i))
-                print(i)
             elif i.lower() == 'r':
                 new_series = retrograde(new_series)
             elif i.lower() == 'i':
@@ -120,16 +119,36 @@ def spit_out_notes(new_series, note_dictionary):
         notes += note_dictionary[i] + ' '
     return notes
 
+
+# This run_again function will determine whether to keep the same series and pitch.
+# This is called at the bottom of the run function if the user says Yes to run again
+def run_again(reference_pitch, prime_series):
+    while True:
+        keep_same = input('Would you like to keep the same series and pitch? Y/n: ')
+        if keep_same.lower() == 'y':
+            print(f'Ok, your reference pitch is {reference_pitch}\nAnd series is {prime_series}')
+            run(reference_pitch=reference_pitch, prime_series=prime_series, keep_same=True)
+        elif keep_same.lower() == 'n':
+            print('Resetting values...')
+            run(reference_pitch=None, prime_series=None, keep_same=False)
+        else:
+            print('Invalid input.')
+            
+
 # Now to put it all together.
 # The order is: get the reference pitch, then create a dictionary on it, then get the prime series,
 # then get the transformations and apply them. Finally, spit out the notes for the series.
 
-def run():
-    reference_pitch = get_reference_pitch()
+def run(reference_pitch, prime_series, keep_same: bool):
+    if keep_same == False:
+        reference_pitch = get_reference_pitch()
+        prime_series = get_prime_series()
+
     note_dictionary = create_note_dictionary(reference_pitch)
-    prime_series = get_prime_series()
+        
     new_series = transform(prime_series)
     notes = spit_out_notes(new_series, note_dictionary)
+    print(f"New series: {new_series}")
     print(notes)
 
     while(True):
@@ -138,13 +157,11 @@ def run():
                 print('Invalid input. Try again')
             elif user_input.lower() == 'n':
                 print('Exiting program...')
-                return None
+                quit()
             elif user_input.lower() == 'y':
-                run()
+                run_again(reference_pitch, prime_series)
             else:
                 print('What') # This should technically be inaccessible, but just in case...
                 continue           
 
-run()
-# TODO: Add a conditional for if they want to use the same series they entered last time.
-# def run_again(prime_series): This would be called from the run function...
+run(reference_pitch=None, prime_series=None, keep_same=False)
